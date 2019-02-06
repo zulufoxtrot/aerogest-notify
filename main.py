@@ -12,6 +12,9 @@ Notifies user if a difference is found
 import requests
 import time
 import sys
+from datetime import datetime
+import json
+
 
 from pushbullet import Pushbullet
 import pushbullet.errors as PBerrors
@@ -32,7 +35,10 @@ PASSWORD = 'cja20ara'
 INSTRUCTOR_ID = 2489  # zacharie clerc
 
 # start date of the calendar. Aerogest's API will return the 16 days following this date.
-DATE = "20190206"
+now = datetime.now()
+DATE = now.strftime('%Y%m%d')      # '20180315'
+
+#DATE = "20190206"
 
 INTERVAL = 300  # 300s = 5 mins
 
@@ -62,7 +68,9 @@ with requests.Session() as session:
 
     form_request = session.get(login_url)
 
-    # get CSRF token from microsoft IIS
+    # get CSRF token from form
+    # this is how the server works. It puts the token into the form,
+    # we have to submit it with the form to make a valid request.
     soup = BeautifulSoup(form_request.text, 'html.parser')
     __RequestVerificationToken = soup.find('input', {'name': '__RequestVerificationToken'})['value']
 
@@ -81,9 +89,10 @@ with requests.Session() as session:
     # print(page.content)
 
     # once logged in, we enter a loop to check the JSON API periodically.
+    # we stay in the Requests session.
     while True:
 
-        print("Checking now.")
+        print("Checking now from date: " + DATE)
 
         try:
             r = session.post(REQUEST_URL)
@@ -110,9 +119,13 @@ with requests.Session() as session:
             continue
 
         # TODO: catch exception if not json
-        current_response = r.json()
+        try:
+            current_response = r.json()
+        except json.decoder.JSONDecodeError:
+            print("Got invalid JSON.")
+            continue
 
-        print(current_response)
+        print(str(current_response))
 
         if current_response != previous_response and previous_response is not None:
             print("Found a difference in the schedule!")
