@@ -26,13 +26,13 @@ from jsondiff import diff
 # set globals
 
 # the email address used to log into aerogest
-USERNAME = 'youri.lcd@gmail.com'
+USERNAME = SET_USERNAME
 # the aerogest password
-PASSWORD = 'cja20ara'
+PASSWORD = SET_PASSWORD
 
 # the ID of the instructor to check schedule for.
 # note: you may also check schedules for individual users or aircraft. find the proper syntax in API.
-INSTRUCTOR_ID = 2489  # zacharie clerc
+INSTRUCTOR_ID = SET_ID_HERE
 
 # start date of the calendar. Aerogest's API will return the 16 days following this date.
 now = datetime.now()
@@ -42,7 +42,7 @@ DATE = now.strftime('%Y%m%d')      # '20180315'
 
 INTERVAL = 300  # 300s = 5 mins
 
-PUSHBULLET_API_KEY = "o.IvvtzqqFw4Gv5deUigOCF8mRWs9HJG9T"
+PUSHBULLET_API_KEY = SET_API_KEY
 
 # only change this if the API changes
 REQUEST_URL = "https://online.aerogest.fr/api/schedule/bookingapi/GetPlanningInstructor/" + str(
